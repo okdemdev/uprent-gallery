@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun run -b vite dev --host 0.0.0.0 --port 5000",
+    "dev": "bun run -b vite dev --host 0.0.0.0 --port 3000",
     "lint": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
