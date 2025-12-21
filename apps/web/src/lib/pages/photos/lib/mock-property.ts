@@ -1,4 +1,5 @@
-import { type BasePropertySchema, ENERGY_LABEL, INTERIOR } from '~core/database'
+import { type BasePropertySchema } from '~core/database/schemas'
+import { ENERGY_LABEL, INTERIOR } from '~core/database'
 
 export const mockProperty: BasePropertySchema = {
   addedTime: '2025-10-20T15:31:54',
