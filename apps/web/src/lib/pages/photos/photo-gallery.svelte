@@ -27,67 +27,62 @@
 </script>
 
 <!-- Full-screen overlay -->
-<div class=".fixed .inset-0 .z-[1000] .bg-black/90">
-  <!-- Fixed left panel (property card + legal banner) -->
-  <div class=".fixed .top-4 .left-4 .z-[1010] .flex .flex-col .gap-2 sm:.flex-row sm:.items-start sm:.gap-3">
-    <!-- Property info card -->
-    <div class=".flex .gap-3 .p-3 .bg-white .rounded-lg .shadow-lg .w-max">
-      <img 
-        src={property.previewImageURL} 
-        alt={property.title}
-        class=".w-10 .h-10 .object-cover .rounded .shrink-0"
-      />
-      <div class=".flex .flex-col .min-w-0">
-        <span class=".text-sm .font-semibold .text-gray-900 .leading-tight">{property.title}</span>
-        <span class=".text-xs .text-gray-400 .leading-tight">{property.cityName}</span>
-        <div class=".flex .items-center .gap-2 .mt-1 .text-xs .text-gray-600">
-          <span class=".font-semibold .text-gray-900">{formatPrice(property.price)}</span>
-          <span class=".text-gray-400">📐 {property.area} m²</span>
+<div class=".fixed .inset-0 .z-[1000] .bg-black/90 .flex .flex-col">
+  <!-- Header section - single horizontal row -->
+  <header class=".flex .items-start .gap-2 .p-2 .shrink-0 md:.p-4">
+    
+    <!-- Property info card (compact, stacked) -->
+    <div class=".flex .flex-col .gap-2 .p-2 .bg-white .rounded-lg .shadow-lg .shrink-0 .border .border-gray-200 .min-w-[124px]">
+      <div class=".font-bold .text-xs .text-gray-900 .leading-tight md:.text-sm">{property.title}</div>
+      
+      <div class=".flex .gap-2 .items-start">
+        <img 
+          src={property.previewImageURL} 
+          alt={property.title}
+          class=".w-12 .h-12 .object-cover .rounded .shrink-0"
+        />
+        <div class=".flex .flex-col .justify-between .h-12 .text-[10px] .text-gray-500 md:.text-xs">
+          <div class=".truncate .max-w-[100px]">{property.cityName}</div>
+          <div class=".font-bold .text-gray-900">{formatPrice(property.price)}</div>
+          <div class=".items-center .flex .gap-1">
+            <span class=".text-[8px]">📐</span>
+            <span>{property.area} m²</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Legal banner with hover tooltip -->
+    <!-- Legal banner -->
     <div 
-      class=".relative .bg-white .rounded-lg .shadow-lg .p-3 .cursor-default"
+      class=".flex .shrink .items-center .gap-2 .rounded .border .border-gray-200 .bg-gray-50 .p-2 .px-3"
       role="group"
       onmouseenter={() => showDisclaimer = true}
       onmouseleave={() => showDisclaimer = false}
     >
-      <div class=".flex .items-center .gap-2 .text-xs .text-gray-600">
-        <InfoCircleSVG class=".h-4 .w-4 .text-red-400 .shrink-0" />
-        <span>These photos are from <a href={property.sourceURL} target="_blank" rel="noopener noreferrer" class=".text-red-500 .font-medium hover:.underline">{property.sourceName}</a></span>
-      </div>
-      
-      <!-- Tooltip disclaimer (absolute, no layout shift) -->
-      {#if showDisclaimer}
-        <div class=".absolute .top-full .left-0 .mt-2 .p-3 .bg-white .rounded-lg .shadow-xl .text-xs .text-gray-500 .leading-relaxed .w-64 .z-[1020]">
-          The property images shown are embedded from publicly available third-party sources. 
-          Uprent does not host, store, or claim ownership of these images.
-        </div>
-      {/if}
+      <InfoCircleSVG class=".h-3 .w-3 .shrink-0 .text-gray-500" />
+      <span class=".break-words .text-left .text-[10px]">These photos are from <a href={property.sourceURL} target="_blank" rel="noopener noreferrer" class=".text-primary .underline">{property.sourceName}</a></span>
     </div>
-  </div>
 
-  <!-- Fixed close button -->
-  <button 
-    class=".fixed .top-4 .right-4 .z-[1010] .flex .items-center .justify-center .h-10 .w-10 .rounded-full .bg-red-500 .text-white .border-0 .cursor-pointer .transition-colors .shadow-lg hover:.bg-red-600"
-    onclick={onClose}
-    aria-label="Close gallery"
-  >
-    <XSVG class=".h-5 .w-5" />
-  </button>
+    <!-- Close button - far right -->
+    <button 
+      class=".ml-auto .flex .items-center .justify-center .h-8 .w-8 .rounded-full .bg-red-500 .text-white .border-0 .cursor-pointer .shrink-0 hover:.bg-red-600"
+      onclick={onClose}
+      aria-label="Close gallery"
+    >
+      <XSVG class=".h-4 .w-4" />
+    </button>
+  </header>
 
-  <!-- Scrollable images section (starts from top) -->
-  <div class=".absolute .inset-0 .overflow-y-auto .pt-4 .px-4 .pb-4">
-    <div class=".flex .flex-col .items-center .gap-4 .max-w-4xl .mx-auto">
+  <!-- Scrollable images section -->
+  <main class=".flex-1 .overflow-y-auto .px-2 .pb-2 md:.px-4 md:.pb-4">
+    <div class=".flex .flex-col .items-center .gap-3 .max-w-4xl .mx-auto md:.gap-4">
       {#each property.imageURLs as imageUrl, index}
         <img 
           src={imageUrl} 
           alt="Property image {index + 1} of {property.imageURLs.length}"
-          class=".w-full .object-contain .rounded-xl .shadow-2xl"
+          class=".w-full .object-contain .rounded-lg .shadow-2xl md:.rounded-xl"
         />
       {/each}
     </div>
-  </div>
+  </main>
 </div>
