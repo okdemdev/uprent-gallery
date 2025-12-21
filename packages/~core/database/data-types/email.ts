@@ -31,7 +31,8 @@ export interface Email {
   messageId: string
   datetime: string
   subject: string
-  content: string
+  /** Optional - only populated when fetching full email body */
+  content?: string
   from: {
     name?: string | undefined
     email: string
@@ -44,5 +45,6 @@ export interface Email {
   inReplyTo?: string
   references?: string[]
   flags: string[]
-  attachments: EmailAttachment[]
+  /** Optional - only populated when fetching full email body */
+  attachments?: EmailAttachment[]
 }
