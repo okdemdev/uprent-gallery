@@ -169,6 +169,7 @@
           alt="Property view {index + 1}"
           class=".w-full .h-auto .rounded-lg .shadow-xl .bg-gray-900 .ring-1 .ring-white/10"
           loading={index > 2 ? 'lazy' : 'eager'}
+          onerror={(e) => { e.currentTarget.style.display = 'none' }}
         />
       {/each}
     </div>
