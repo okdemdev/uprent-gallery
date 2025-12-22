@@ -75,10 +75,10 @@
   <!-- Mobile Header (Fixed) - visible on md and below, hidden on desktop -->
   <header class=".hidden md:.block .bg-white .z-20 .absolute .top-0 .left-0 .right-0">
     <!-- Legal Banner -->
-    <div class=".flex .items-center .gap-2 .px-3 .py-2 .text-xs .border-b .border-gray-100">
-      <InfoCircleSVG class=".h-3.5 .w-3.5 .text-gray-400 .shrink-0" />
+    <div class=".flex .items-center .gap-2 .px-3 .py-2 .text-xs .border-b .border-black-100">
+      <InfoCircleSVG class=".h-3.5 .w-3.5 .text-black-300 .shrink-0" />
       <span class=".text-gray-600">
-        These photos are from <a href={property.sourceURL} target="_blank" class=".text-red-500 .font-medium">{property.sourceName}</a>
+        These photos are from <a href={property.sourceURL} target="_blank" class=".text-primary .font-medium">{property.sourceName}</a>
       </span>
     </div>
     
@@ -93,7 +93,7 @@
       
       <!-- Info -->
       <div class=".flex-1 .min-w-0">
-        <h3 class=".font-bold .text-sm .text-gray-900 .truncate">{property.title}</h3>
+        <h3 class=".font-bold .text-sm .text-black .truncate">{property.title}</h3>
         <p class=".text-xs .text-gray-500">{property.cityName}</p>
         <div class=".flex .items-center .gap-3 .mt-0.5 .text-xs .text-gray-700">
           <span class=".font-semibold">€ {property.price}</span>
@@ -106,7 +106,7 @@
       
       <!-- Close Button -->
       <button 
-        class=".p-2 .rounded-full .bg-red-500 .text-white .shrink-0"
+        class=".p-2 .rounded-full .bg-primary .text-white .shrink-0"
         onclick={onClose}
       >
         <XSVG class=".h-5 .w-5" />
@@ -117,9 +117,9 @@
   <!-- Desktop: Legal Attribution Banner (Top-Left) - hidden on md and below -->
   <div class=".flex md:.hidden .absolute .top-4 .left-4 .z-30">
     <div class=".bg-white .rounded-lg .shadow-lg .px-3 .py-2 .flex .items-center .gap-2 .text-sm">
-      <InfoCircleSVG class=".h-4 .w-4 .text-gray-400" />
+      <InfoCircleSVG class=".h-4 .w-4 .text-black-300" />
       <span class=".text-gray-600">
-        These photos are from <a href={property.sourceURL} target="_blank" class=".text-red-500 .font-medium hover:.underline">{property.sourceName}</a>
+        These photos are from <a href={property.sourceURL} target="_blank" class=".text-primary .font-medium hover:.underline">{property.sourceName}</a>
       </span>
     </div>
   </div>
@@ -127,7 +127,7 @@
   <!-- Desktop: Close Button (Top-Right) - hidden on md and below -->
   <div class=".flex md:.hidden .absolute .top-4 .right-4 .z-30">
     <button 
-      class=".p-2 .rounded-full .bg-red-500 .text-white hover:.bg-red-600 .transition .shadow-lg"
+      class=".p-2 .rounded-full .bg-primary .text-white hover:.bg-primary-950 .transition .shadow-lg"
       onclick={onClose}
     >
       <XSVG class=".h-5 .w-5" />
@@ -146,7 +146,7 @@
       
       <!-- Property Info -->
       <div class=".p-4">
-        <h3 class=".font-bold .text-base .text-gray-900 .leading-tight .truncate">{property.title}</h3>
+        <h3 class=".font-bold .text-base .text-black .leading-tight .truncate">{property.title}</h3>
         <p class=".text-sm .text-gray-500 .mt-1">{property.cityName}</p>
         
         <div class=".flex .items-center .gap-3 .mt-3 .text-sm .text-gray-700">
@@ -167,7 +167,7 @@
         <img 
           src={imageUrl} 
           alt="Property view {index + 1}"
-          class=".w-full .h-auto .rounded-lg .shadow-xl .bg-gray-900 .ring-1 .ring-white/10"
+          class=".w-full .h-auto .rounded-lg .shadow-xl .bg-black .ring-1 .ring-white/10"
           loading={index > 2 ? 'lazy' : 'eager'}
           onerror={(e) => { e.currentTarget.style.display = 'none' }}
         />
@@ -178,7 +178,7 @@
   <!-- Desktop: Floating Actions Card (Below Location Card) - hidden on md and below -->
   <div class=".flex md:.hidden .flex-col .fixed .top-[300px] .left-4 .z-20 .pointer-events-none">
     <div class=".bg-white .rounded-xl .shadow-2xl .p-4 .flex .flex-col .gap-3 .pointer-events-auto .w-[220px] .ring-1 .ring-black/5">
-      <h3 class=".font-semibold .text-sm .text-gray-900">Interested?</h3>
+      <h3 class=".font-semibold .text-sm .text-black">Interested?</h3>
       
       <div class=".flex .flex-col .gap-2">
         <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="sm" wide>
