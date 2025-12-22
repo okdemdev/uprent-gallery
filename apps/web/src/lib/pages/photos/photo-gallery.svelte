@@ -132,20 +132,20 @@
 
   <!-- Left Column (Desktop): Compact Property Info Card - hidden on md and below -->
   <div class=".flex md:.hidden .flex-col .fixed .top-16 .left-4 .z-20 .pointer-events-none">
-    <div class=".bg-white .rounded-xl .shadow-2xl .overflow-hidden .pointer-events-auto .w-[180px] .ring-1 .ring-black/5">
+    <div class=".bg-white .rounded-xl .shadow-2xl .overflow-hidden .pointer-events-auto .w-[220px] .ring-1 .ring-black/5">
       <!-- Property Thumbnail -->
       <img 
         src={property.imageURLs[0]} 
         alt="Property preview"
-        class=".w-full .h-20 .object-cover"
+        class=".w-full .h-28 .object-cover"
       />
       
       <!-- Property Info -->
-      <div class=".p-3">
-        <h3 class=".font-bold .text-sm .text-gray-900 .leading-tight .truncate">{property.title}</h3>
-        <p class=".text-xs .text-gray-500 .mt-0.5">{property.cityName}</p>
+      <div class=".p-4">
+        <h3 class=".font-bold .text-base .text-gray-900 .leading-tight .truncate">{property.title}</h3>
+        <p class=".text-sm .text-gray-500 .mt-1">{property.cityName}</p>
         
-        <div class=".flex .items-center .gap-3 .mt-2 .text-xs .text-gray-700">
+        <div class=".flex .items-center .gap-3 .mt-3 .text-sm .text-gray-700">
           <span class=".font-semibold">€ {property.price}</span>
           <span class=".flex .items-center .gap-1">
             <span>⌂</span>
@@ -170,9 +170,9 @@
     </div>
   </div>
 
-  <!-- Right Column (Desktop): Compact Floating Actions Card - hidden on md and below -->
-  <div class=".flex md:.hidden .flex-col .fixed .top-16 .right-4 .z-20 .pointer-events-none">
-    <div class=".bg-white .rounded-xl .shadow-2xl .p-4 .flex .flex-col .gap-3 .pointer-events-auto .w-[200px] .ring-1 .ring-black/5">
+  <!-- Desktop: Floating Actions Card (Below Location Card) - hidden on md and below -->
+  <div class=".flex md:.hidden .flex-col .fixed .top-[300px] .left-4 .z-20 .pointer-events-none">
+    <div class=".bg-white .rounded-xl .shadow-2xl .p-4 .flex .flex-col .gap-3 .pointer-events-auto .w-[220px] .ring-1 .ring-black/5">
       <h3 class=".font-semibold .text-sm .text-gray-900">Interested?</h3>
       
       <div class=".flex .flex-col .gap-2">
