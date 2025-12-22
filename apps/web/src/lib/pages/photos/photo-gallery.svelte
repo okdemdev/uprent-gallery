@@ -69,139 +69,150 @@
 </script>
 
 <!-- Full-screen overlay with dark blurred background -->
-<div class=".fixed .inset-0 .z-[1000] .bg-black/80 .backdrop-blur-md .flex .flex-col md:.flex-row .overflow-hidden">
+<div class=".fixed .inset-0 .z-[1000] .bg-black/85 .backdrop-blur-md .flex .flex-col .overflow-hidden">
   
-  <!-- Mobile Header (Fixed) -->
-  <header class=".flex .md:hidden .items-center .justify-between .p-3 .bg-white/90 .backdrop-blur .border-b .z-20 .absolute .top-0 .left-0 .right-0">
-     <div class=".flex .flex-col">
-        <span class=".font-bold .text-sm .text-gray-900">{property.cityName}</span>
-        <span class=".text-xs .text-gray-500">{formatPrice(property.price)}</span>
-     </div>
-     <button 
-      class=".p-2 .rounded-full .bg-gray-100 .text-gray-600"
+  <!-- Mobile Header (Fixed) - visible on md and below, hidden on desktop -->
+  <header class=".hidden md:.block .bg-white .z-20 .absolute .top-0 .left-0 .right-0">
+    <!-- Legal Banner -->
+    <div class=".flex .items-center .gap-2 .px-3 .py-2 .text-xs .border-b .border-gray-100">
+      <InfoCircleSVG class=".h-3.5 .w-3.5 .text-gray-400 .shrink-0" />
+      <span class=".text-gray-600">
+        These photos are from <a href={property.sourceURL} target="_blank" class=".text-red-500 .font-medium">{property.sourceName}</a>
+      </span>
+    </div>
+    
+    <!-- Property Info Card -->
+    <div class=".flex .items-center .gap-3 .p-3">
+      <!-- Thumbnail -->
+      <img 
+        src={property.imageURLs[0]} 
+        alt="Property preview"
+        class=".w-12 .h-12 .rounded-lg .object-cover .shrink-0"
+      />
+      
+      <!-- Info -->
+      <div class=".flex-1 .min-w-0">
+        <h3 class=".font-bold .text-sm .text-gray-900 .truncate">{property.title}</h3>
+        <p class=".text-xs .text-gray-500">{property.cityName}</p>
+        <div class=".flex .items-center .gap-3 .mt-0.5 .text-xs .text-gray-700">
+          <span class=".font-semibold">€ {property.price}</span>
+          <span>⌂ {property.area} m²</span>
+        </div>
+      </div>
+      
+      <!-- Close Button -->
+      <button 
+        class=".p-2 .rounded-full .bg-gray-100 .text-gray-600 .shrink-0"
+        onclick={onClose}
+      >
+        <XSVG class=".h-5 .w-5" />
+      </button>
+    </div>
+  </header>
+
+  <!-- Desktop: Legal Attribution Banner (Top-Left) - hidden on md and below -->
+  <div class=".flex md:.hidden .absolute .top-4 .left-4 .z-30">
+    <div class=".bg-white .rounded-lg .shadow-lg .px-3 .py-2 .flex .items-center .gap-2 .text-sm">
+      <InfoCircleSVG class=".h-4 .w-4 .text-gray-400" />
+      <span class=".text-gray-600">
+        These photos are from <a href={property.sourceURL} target="_blank" class=".text-red-500 .font-medium hover:.underline">{property.sourceName}</a>
+      </span>
+    </div>
+  </div>
+
+  <!-- Desktop: Close Button (Top-Right) - hidden on md and below -->
+  <div class=".flex md:.hidden .absolute .top-4 .right-4 .z-30">
+    <button 
+      class=".p-2 .rounded-full .bg-red-500 .text-white hover:.bg-red-600 .transition .shadow-lg"
       onclick={onClose}
     >
       <XSVG class=".h-5 .w-5" />
     </button>
-  </header>
+  </div>
 
-   <!-- Left Column: Property Info (Desktop) -->
-   <div class=".hidden .md:flex .flex-col .w-[360px] .shrink-0 .p-6 .gap-6 .h-full .overflow-y-auto">
+  <!-- Left Column (Desktop): Compact Property Info Card - hidden on md and below -->
+  <div class=".flex md:.hidden .flex-col .fixed .top-16 .left-4 .z-20 .pointer-events-none">
+    <div class=".bg-white .rounded-xl .shadow-2xl .overflow-hidden .pointer-events-auto .w-[180px] .ring-1 .ring-black/5">
+      <!-- Property Thumbnail -->
+      <img 
+        src={property.imageURLs[0]} 
+        alt="Property preview"
+        class=".w-full .h-20 .object-cover"
+      />
       
-      <!-- Info Card -->
-      <div class=".bg-white .rounded-2xl .shadow-lg .overflow-hidden .flex .flex-col">
-          <div class=".p-6 .flex .flex-col .gap-4">
-              <div>
-                  <h2 class=".font-bold .text-xl .text-gray-900 .leading-tight">{property.title}</h2>
-                  <div class=".text-gray-500 .mt-1">{property.cityName}</div>
-              </div>
-              
-              <div class=".flex .items-baseline .gap-2">
-                 <span class=".text-2xl .font-bold .text-gray-900">{formatPrice(property.price)}</span>
-                 <span class=".text-sm .text-gray-500">/month</span>
-              </div>
-
-              <div class=".grid .grid-cols-2 .gap-y-4 .gap-x-2 .text-sm .pt-2 .border-t .border-gray-100">
-                 <div class=".flex .flex-col">
-                    <span class=".text-xs .text-gray-400 .uppercase .tracking-wider">Area</span>
-                    <span class=".font-medium .text-gray-900">{property.area} m²</span>
-                 </div>
-                 <div class=".flex .flex-col">
-                    <span class=".text-xs .text-gray-400 .uppercase .tracking-wider">Rooms</span>
-                    <span class=".font-medium .text-gray-900">{property.extraFields?.rooms ?? '-'}</span>
-                 </div>
-                 <div class=".flex .flex-col">
-                    <span class=".text-xs .text-gray-400 .uppercase .tracking-wider">Interior</span>
-                    <span class=".font-medium .text-gray-900">{property.extraFields?.interior ?? '-'}</span>
-                 </div>
-                 <div class=".flex .flex-col">
-                    <span class=".text-xs .text-gray-400 .uppercase .tracking-wider">Available</span>
-                    <span class=".font-medium .text-gray-900">{property.extraFields?.availableSince ?? 'Now'}</span>
-                 </div>
-              </div>
-          </div>
-          
-           <!-- Legal Footer in Left Card -->
-           <div class=".bg-gray-50 .p-4 .text-xs .text-gray-500 .border-t .border-gray-100 .flex .gap-2">
-              <InfoCircleSVG class=".h-4 .w-4 .shrink-0 .mt-0.5" />
-              <span>
-                  Photos from <a href={property.sourceURL} target="_blank" class=".underline .hover:.text-gray-700">{property.sourceName}</a>
-              </span>
-           </div>
+      <!-- Property Info -->
+      <div class=".p-3">
+        <h3 class=".font-bold .text-sm .text-gray-900 .leading-tight .truncate">{property.title}</h3>
+        <p class=".text-xs .text-gray-500 .mt-0.5">{property.cityName}</p>
+        
+        <div class=".flex .items-center .gap-3 .mt-2 .text-xs .text-gray-700">
+          <span class=".font-semibold">€ {property.price}</span>
+          <span class=".flex .items-center .gap-1">
+            <span>⌂</span>
+            <span>{property.area} m²</span>
+          </span>
+        </div>
       </div>
+    </div>
+  </div>
 
-   </div>
-
-   <!-- Middle Column: Images (Desktop) | Full Content (Mobile) -->
-  <div class=".flex-1 .h-full .overflow-y-auto .pb-[120px] md:.pb-0 .pt-[60px] md:.pt-0 .scrollbar-hide">
-    <div class=".flex .flex-col .gap-4 .p-4 .max-w-4xl .mx-auto .md:py-8">
+   <!-- Middle Column: Images (Desktop + Mobile) -->
+  <div class=".flex-1 .w-full .h-full .overflow-y-auto md:.pb-[140px] .pb-0 md:.pt-[100px] .pt-0 .scrollbar-hide .z-0">
+    <div class=".flex .flex-col .gap-6 .p-4 .max-w-4xl .mx-auto .py-12">
       {#each property.imageURLs as imageUrl, index}
         <img 
           src={imageUrl} 
           alt="Property view {index + 1}"
-          class=".w-full .h-auto .rounded-lg .shadow-lg .bg-gray-800"
+          class=".w-full .h-auto .rounded-lg .shadow-xl .bg-gray-900 .ring-1 .ring-white/10"
           loading={index > 2 ? 'lazy' : 'eager'}
         />
       {/each}
     </div>
   </div>
 
-  <!-- Right Column: Actions (Desktop) -->
-  <div class=".hidden .md:flex .flex-col .w-[320px] .shrink-0 .p-6 .gap-6 .h-full">
-     
-     <!-- Close Button -->
-     <div class=".flex .justify-end">
-        <button 
-          class=".p-2 .rounded-full .bg-white/10 .text-white .hover:.bg-white/20 .transition"
-          onclick={onClose}
-        >
-          <XSVG class=".h-6 .w-6" />
-        </button>
-     </div>
-
-     <!-- Actions Card -->
-     <div class=".bg-white .rounded-2xl .shadow-lg .p-5 .flex .flex-col .gap-4">
-        <h3 class=".font-bold .text-gray-900">Actions</h3>
+  <!-- Right Column (Desktop): Compact Floating Actions Card - hidden on md and below -->
+  <div class=".flex md:.hidden .flex-col .fixed .top-16 .right-4 .z-20 .pointer-events-none">
+    <div class=".bg-white .rounded-xl .shadow-2xl .p-4 .flex .flex-col .gap-3 .pointer-events-auto .w-[200px] .ring-1 .ring-black/5">
+      <h3 class=".font-semibold .text-sm .text-gray-900">Interested?</h3>
+      
+      <div class=".flex .flex-col .gap-2">
+        <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="sm" wide>
+          {#if appliedState === 'idle'}
+            <SendSVG slot="icon" />
+            Apply
+          {:else if appliedState === 'loading'}
+            Applying...
+          {:else if appliedState === 'success'}
+            <CheckSVG slot="icon" />
+            Sent!
+          {:else}
+            Error
+          {/if}
+        </Button>
         
-        <div class=".flex .flex-col .gap-3">
-             <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="lg">
-                {#if appliedState === 'idle'}
-                    <SendSVG slot="icon" />
-                    Apply Now
-                {:else if appliedState === 'loading'}
-                    Applying...
-                {:else if appliedState === 'success'}
-                    <CheckSVG slot="icon" />
-                    Sent!
-                {:else}
-                    Error
-                {/if}
-            </Button>
-            
-            <div class=".grid .grid-cols-2 .gap-3">
-                 <Button outline onClick={openExternal}>
-                    <ExternalLinkSVG slot="icon" />
-                    Open
-                </Button>
-                <Button outline destructive onClick={handleNotInterested} disabled={ignoredState !== 'idle'}>
-                     {#if ignoredState === 'idle'}
-                        <ThumbDownSVG slot="icon" />
-                        Ignore
-                    {:else if ignoredState === 'loading'}
-                        ...
-                    {:else if ignoredState === 'success'}
-                        Ignored
-                    {:else}
-                        Error
-                    {/if}
-                </Button>
-            </div>
-        </div>
-     </div>
+        <Button outline onClick={openExternal} size="sm" wide>
+          <ExternalLinkSVG slot="icon" />
+          Open
+        </Button>
+        
+        <Button outline destructive onClick={handleNotInterested} disabled={ignoredState !== 'idle'} size="sm" wide>
+          {#if ignoredState === 'idle'}
+            <ThumbDownSVG slot="icon" />
+            Ignore
+          {:else if ignoredState === 'loading'}
+            ...
+          {:else if ignoredState === 'success'}
+            Ignored
+          {:else}
+            Error
+          {/if}
+        </Button>
+      </div>
+    </div>
   </div>
 
-  <!-- Mobile Bottom Sheet Actions (Fixed) -->
-  <div class=".md:hidden .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-4 .pb-safe .z-30">
+  <!-- Mobile Bottom Sheet Actions (Fixed) - visible on md and below, hidden on desktop -->
+  <div class=".hidden md:.block .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-4 .pb-safe .z-30">
         <div class=".flex .flex-col .gap-3">
              <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="lg">
                 {#if appliedState === 'idle'}
@@ -242,3 +253,4 @@
       scrollbar-width: none;  /* Firefox */
   }
 </style>
+
