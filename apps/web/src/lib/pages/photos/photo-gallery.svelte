@@ -6,7 +6,8 @@
     CheckSVG, 
     ThumbDownSVG,
     SendSVG,
-    ChevronDownSVG
+    ChevronDownSVG,
+    DimensionsSVG
   } from '~ui/assets'
   import { Button } from '~ui/components'
   import type { BasePropertySchema } from '~core/database/schemas'
@@ -96,13 +97,16 @@
         <p class=".text-xs .text-gray-500">{property.cityName}</p>
         <div class=".flex .items-center .gap-3 .mt-0.5 .text-xs .text-gray-700">
           <span class=".font-semibold">€ {property.price}</span>
-          <span>⌂ {property.area} m²</span>
+          <span class=".flex .items-center .gap-1">
+            <DimensionsSVG class=".h-3.5 .w-3.5 .shrink-0" />
+            <span>{property.area} m²</span>
+          </span>
         </div>
       </div>
       
       <!-- Close Button -->
       <button 
-        class=".p-2 .rounded-full .bg-gray-100 .text-gray-600 .shrink-0"
+        class=".p-2 .rounded-full .bg-red-500 .text-white .shrink-0"
         onclick={onClose}
       >
         <XSVG class=".h-5 .w-5" />
@@ -148,7 +152,7 @@
         <div class=".flex .items-center .gap-3 .mt-3 .text-sm .text-gray-700">
           <span class=".font-semibold">€ {property.price}</span>
           <span class=".flex .items-center .gap-1">
-            <span>⌂</span>
+            <DimensionsSVG class=".h-4 .w-4 .shrink-0" />
             <span>{property.area} m²</span>
           </span>
         </div>
