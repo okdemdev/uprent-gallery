@@ -94,7 +94,7 @@
       
       <!-- Clean Button -->
       <button 
-        class=".absolute .top-3 .right-3 .flex .items-center .gap-1.5 .py-2 .px-3 .rounded-full .bg-white/90 .text-primary .shadow-lg .opacity-0 group-hover:.opacity-100 md:.opacity-100 .transition-opacity .backdrop-blur-sm hover:.bg-white hover:.scale-105 .transform .duration-200 .text-sm .font-medium"
+        class=".absolute .top-3 .right-3 md:.top-2 md:.right-2 .flex .items-center .gap-1.5 md:.gap-1 .py-2 md:.py-1.5 .px-3 md:.px-2.5 .rounded-full .bg-white/90 .text-primary .shadow-lg .opacity-0 group-hover:.opacity-100 md:.opacity-100 .transition-opacity .backdrop-blur-sm hover:.bg-white hover:.scale-105 .transform .duration-200 .text-sm md:.text-xs .font-medium"
         class:!.opacity-100={cleaningState === 'loading' || cleaningState === 'error'}
         class:!.bg-primary={cleaningState === 'loading'}
         class:!.text-white={cleaningState === 'loading'}
