@@ -33,6 +33,7 @@ const resDTO = t.Object({
       attachments: t.Optional(t.Array(
         t.Object({
           uid: t.Number(),
+          partId: t.Optional(t.String()),
           contentType: t.String(),
           filename: t.Optional(t.String()),
           size: t.Number(),

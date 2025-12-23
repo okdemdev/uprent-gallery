@@ -1,5 +1,7 @@
 export interface EmailAttachment {
   uid: number
+  /** IMAP part identifier for fetching the attachment content */
+  partId?: string
   contentType: string
   filename?: string | undefined
   size: number

@@ -1,6 +1,6 @@
 <script lang="ts">
   import dayjs from 'dayjs'
-  import type { Email } from '~core/database'
+  import type { Email, EmailAttachment } from '~core/database'
   import { LoadingSpinnerSVG, ChevronDownSVG } from '~ui/assets'
   import api from '~api'
 
@@ -9,7 +9,13 @@
   let expanded = $state(false)
   let loading = $state(false)
   let content = $state<string | null>(null)
+  let attachments = $state<EmailAttachment[]>([])
   let error = $state<string | null>(null)
+  let imagesLoaded = $state(false)
+  
+  // Cache for downloaded attachments and inline images
+  const attachmentCache = new Map<string, string>()
+  const inlineImageCache = new Map<number, Array<{ contentId: string; contentType: string; data: string }>>()
 
   async function toggleExpand() {
     if (expanded) {
@@ -32,6 +38,12 @@
           console.error(apiError)
         } else if (data?.payload?.email) {
           content = data.payload.email.content ?? null
+          attachments = data.payload.email.attachments ?? []
+          
+          // Auto-load inline images after a delay
+          if (content && !imagesLoaded) {
+            setTimeout(loadInlineImages, 500)
+          }
         }
       } catch (e) {
         error = 'Failed to load email content'
@@ -40,6 +52,89 @@
         loading = false
       }
     }
+  }
+
+  async function loadInlineImages() {
+    // Check cache first
+    if (inlineImageCache.has(email.uid)) {
+      const cached = inlineImageCache.get(email.uid)!
+      replaceInlineImages(cached)
+      return
+    }
+    
+    try {
+      const { data, error: apiError } = await api.emails({ uid: email.uid })['inline-images'].get()
+      
+      if (!apiError && data?.payload?.images) {
+        // Cache the images
+        inlineImageCache.set(email.uid, data.payload.images)
+        replaceInlineImages(data.payload.images)
+      }
+    } catch (e) {
+      console.error('Failed to load inline images', e)
+    }
+  }
+
+  function replaceInlineImages(images: Array<{ contentId: string; contentType: string; data: string }>) {
+    if (!content) return
+    
+    let updatedContent = content
+    for (const img of images) {
+      const cidPattern = new RegExp(`cid:${img.contentId}`, 'gi')
+      updatedContent = updatedContent.replace(cidPattern, `data:${img.contentType};base64,${img.data}`)
+    }
+    content = updatedContent
+    imagesLoaded = true
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  function getFileIcon(contentType: string): string {
+    if (contentType.startsWith('image/')) return '🖼️'
+    if (contentType === 'application/pdf') return '📄'
+    if (contentType.includes('word') || contentType.includes('document')) return '📝'
+    if (contentType.includes('sheet') || contentType.includes('excel')) return '📊'
+    if (contentType.includes('zip') || contentType.includes('archive')) return '📦'
+    return '📎'
+  }
+
+  async function downloadAttachment(attachment: EmailAttachment) {
+    const attachmentIndex = attachment.uid
+    const cacheKey = `${email.uid}-${attachmentIndex}`
+    
+    // Check cache
+    if (attachmentCache.has(cacheKey)) {
+      triggerDownload(attachmentCache.get(cacheKey)!, attachment.filename || 'attachment')
+      return
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5002/emails/${email.uid}/attachment/${attachmentIndex}`)
+      if (!response.ok) throw new Error('Download failed')
+      
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      
+      // Cache the URL
+      attachmentCache.set(cacheKey, url)
+      
+      triggerDownload(url, attachment.filename || 'attachment')
+    } catch (e) {
+      console.error('Failed to download attachment', e)
+    }
+  }
+
+  function triggerDownload(url: string, filename: string) {
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   }
 </script>
 
@@ -86,6 +181,28 @@
         <div class=".prose .prose-sm .max-w-none .overflow-auto">
           {@html content}
         </div>
+        
+        <!-- Attachments List -->
+        {#if attachments.length > 0}
+          <div class=".mt-4 .border-t .border-gray-200 .pt-3">
+            <div class=".mb-2 .text-xs .font-medium .text-gray-500 .uppercase">
+              Attachments ({attachments.filter(a => !a.related).length})
+            </div>
+            <div class=".flex .flex-col .gap-2">
+              {#each attachments.filter(a => !a.related) as attachment}
+                <button
+                  class=".flex .items-center .gap-2 .px-3 .py-2 .text-left .text-sm .bg-gray-50 .rounded-lg .hover:.bg-gray-100 .transition-colors"
+                  onclick={(e) => { e.stopPropagation(); downloadAttachment(attachment); }}
+                >
+                  <span class=".text-lg">{getFileIcon(attachment.contentType)}</span>
+                  <span class=".flex-1 .truncate .font-medium">{attachment.filename || 'Untitled'}</span>
+                  <span class=".text-xs .text-gray-500">{formatFileSize(attachment.size)}</span>
+                  <span class=".text-xs .text-primary .font-medium">Download</span>
+                </button>
+              {/each}
+            </div>
+          </div>
+        {/if}
       {/if}
     </div>
   {/if}
@@ -99,3 +216,4 @@
     transform: rotate(180deg);
   }
 </style>
+
