@@ -25,6 +25,7 @@
   let cleaningStates = $state<Map<number, 'idle' | 'loading' | 'done' | 'error'>>(new Map())
   let cleanedImageUrls = $state<Map<number, string>>(new Map())
   let sliderPositions = $state<Map<number, number>>(new Map())
+  let failedImages = $state<Set<number>>(new Set())
 
   function getCleaningState(index: number): 'idle' | 'loading' | 'done' | 'error' {
     return cleaningStates.get(index) ?? 'idle'
@@ -42,6 +43,12 @@
     const newPositions = new Map(sliderPositions)
     newPositions.set(index, Math.max(0, Math.min(100, position)))
     sliderPositions = newPositions
+  }
+
+  function handleImageError(index: number) {
+    const newFailed = new Set(failedImages)
+    newFailed.add(index)
+    failedImages = newFailed
   }
 
   async function handleCleanImage(imageUrl: string, index: number) {
@@ -333,7 +340,9 @@
         {@const cleaningState = getCleaningState(index)}
         {@const cleanedUrl = getCleanedUrl(index)}
         {@const sliderPos = getSliderPosition(index)}
+        {@const isFailed = failedImages.has(index)}
         
+        {#if !isFailed}
         <div 
           class=".relative .group"
           class:cleaning-container={cleaningState === 'loading'}
@@ -403,7 +412,7 @@
                 class=".w-full .h-auto .rounded-lg .shadow-xl .bg-black .ring-1 .ring-white/10"
                 class:cleaning-pulse={cleaningState === 'loading'}
                 loading={index > 2 ? 'lazy' : 'eager'}
-                onerror={(e) => { e.currentTarget.style.display = 'none' }}
+                onerror={() => handleImageError(index)}
               />
               
               {#if cleaningState === 'loading'}
@@ -441,6 +450,7 @@
             </div>
           {/if}
         </div>
+        {/if}
       {/each}
     </div>
   </div>
