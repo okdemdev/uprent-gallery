@@ -137,7 +137,7 @@
   </div>
 
   <!-- Mobile Bottom Sheet Actions (Fixed) - visible on md and below, hidden on desktop -->
-  <div class=".hidden md:.block .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-4 .pb-safe .z-30">
+  <div class=".hidden md:.block .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-3 .pb-safe .z-30">
     <GalleryActions 
       {property} 
       variant="mobile" 

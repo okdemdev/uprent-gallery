@@ -57,8 +57,8 @@
 
 {#if variant === 'mobile'}
   <!-- Mobile Bottom Sheet Actions -->
-  <div class=".flex .flex-col .gap-3">
-    <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="lg">
+  <div class=".flex .flex-col .gap-2">
+    <Button primary onClick={handleApply} disabled={appliedState !== 'idle'}>
       {#if appliedState === 'idle'}
         <SendSVG slot="icon" />
         Apply
@@ -71,7 +71,7 @@
         Error
       {/if}
     </Button>
-    <div class=".grid .grid-cols-2 .gap-3">
+    <div class=".grid .grid-cols-2 .gap-2">
       <Button outline onClick={openExternal}>
         <ExternalLinkSVG slot="icon" />
         Open
