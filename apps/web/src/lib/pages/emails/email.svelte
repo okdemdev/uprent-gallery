@@ -16,6 +16,9 @@
   // Cache for downloaded attachments and inline images
   const attachmentCache = new Map<string, string>()
   const inlineImageCache = new Map<number, Array<{ contentId: string; contentType: string; data: string }>>()
+  
+  // Track which attachments are currently downloading
+  let downloadingAttachments = $state<Set<number>>(new Set())
 
   async function toggleExpand() {
     if (expanded) {
@@ -111,6 +114,9 @@
       triggerDownload(attachmentCache.get(cacheKey)!, attachment.filename || 'attachment')
       return
     }
+    
+    // Mark as downloading
+    downloadingAttachments = new Set([...downloadingAttachments, attachmentIndex])
 
     try {
       const response = await fetch(`http://localhost:5002/emails/${email.uid}/attachment/${attachmentIndex}`)
@@ -125,6 +131,11 @@
       triggerDownload(url, attachment.filename || 'attachment')
     } catch (e) {
       console.error('Failed to download attachment', e)
+    } finally {
+      // Remove from downloading set
+      const newSet = new Set(downloadingAttachments)
+      newSet.delete(attachmentIndex)
+      downloadingAttachments = newSet
     }
   }
 
@@ -192,12 +203,21 @@
               {#each attachments.filter(a => !a.related) as attachment}
                 <button
                   class=".flex .items-center .gap-2 .px-3 .py-2 .text-left .text-sm .bg-gray-50 .rounded-lg .hover:.bg-gray-100 .transition-colors"
+                  class:opacity-70={downloadingAttachments.has(attachment.uid)}
+                  disabled={downloadingAttachments.has(attachment.uid)}
                   onclick={(e) => { e.stopPropagation(); downloadAttachment(attachment); }}
                 >
                   <span class=".text-lg">{getFileIcon(attachment.contentType)}</span>
                   <span class=".flex-1 .truncate .font-medium">{attachment.filename || 'Untitled'}</span>
                   <span class=".text-xs .text-gray-500">{formatFileSize(attachment.size)}</span>
-                  <span class=".text-xs .text-primary .font-medium">Download</span>
+                  {#if downloadingAttachments.has(attachment.uid)}
+                    <span class=".flex .items-center .gap-1 .text-xs .text-primary .font-medium">
+                      <LoadingSpinnerSVG class=".h-3 .w-3 .animate-spin" />
+                      Downloading...
+                    </span>
+                  {:else}
+                    <span class=".text-xs .text-primary .font-medium">Download</span>
+                  {/if}
                 </button>
               {/each}
             </div>
