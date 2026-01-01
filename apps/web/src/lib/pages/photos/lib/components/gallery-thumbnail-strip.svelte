@@ -49,6 +49,11 @@
     imageURLs.map((url, index) => ({ url, index }))
       .filter(({ index }) => !failedIndices.has(index))
   )
+
+  // Get current position in valid images (1-indexed for display)
+  const currentPosition = $derived(
+    validImages.findIndex(({ index }) => index === currentIndex) + 1
+  )
 </script>
 
 {#if variant === 'desktop'}
@@ -56,13 +61,13 @@
   <div class=".flex .flex-col .items-center .gap-2 .pointer-events-auto">
     <!-- Counter badge -->
     <div class=".bg-white/90 .backdrop-blur-sm .rounded-full .px-2.5 .py-1 .shadow-lg .text-xs .font-semibold .text-black .ring-1 .ring-black/5">
-      {currentIndex + 1}/{validImages.length}
+      {currentPosition > 0 ? currentPosition : 1}/{validImages.length}
     </div>
     
     <!-- Scrollable floating thumbnails -->
     <div 
       bind:this={scrollContainer}
-      class=".flex .flex-col .gap-2 .overflow-y-auto .scrollbar-hide .max-h-[55vh] .p-1"
+      class=".flex .flex-col .gap-2 .overflow-y-auto .scrollbar-hide .max-h-[calc(100vh-140px)] .p-1"
     >
       {#each validImages as { url, index }}
         <button
@@ -87,7 +92,7 @@
     <!-- Counter -->
     <div class=".flex .items-center .justify-between .px-1">
       <span class=".text-xs .font-semibold .text-black">Photos</span>
-      <span class=".text-xs .font-medium .text-black-300">{currentIndex + 1}/{validImages.length}</span>
+      <span class=".text-xs .font-medium .text-black-300">{currentPosition > 0 ? currentPosition : 1}/{validImages.length}</span>
     </div>
     
     <!-- Scrollable thumbnails -->

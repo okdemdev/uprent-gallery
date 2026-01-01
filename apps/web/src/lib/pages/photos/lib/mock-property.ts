@@ -40,7 +40,7 @@ export const mockProperty: BasePropertySchema = {
     utilitiesIncluded: 'yes',
     waterChargeIncluded: 'yes',
   },
-  imageURLs: [
+  imageURLs: Array.from({ length: 10 }, () => [
     '/mock-property-images/1b6a945bfff7206ec0aaafa4b2ce0c38.jpg',
     '/mock-property-images/57bda0054c5f93a8398544c825d33b8e.jpg',
     '/mock-property-images/c71e7c64083400f542385d1e5f4559ca.jpg',
@@ -57,7 +57,7 @@ export const mockProperty: BasePropertySchema = {
     '/mock-property-images/2b94de300e7825e337595732786284ef.jpg',
     '/mock-property-images/e9fa0d74f03eacccf137e88306f852e4.jpg',
     '/mock-property-images/4d36eb34e66bc4c230737eb881327cc5.jpg',
-  ],
+  ]).flat(),
   isRemoved: false,
   lastRevalidatedTime: '2025-11-20T13:41:34.665306959Z',
   latitude: 52.0589651,
