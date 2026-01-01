@@ -25,11 +25,15 @@
   $effect(() => {
     if (!scrollContainer) return
     
+    // Find position of current image within valid images
+    const positionInValid = validImages.findIndex(({ index }) => index === currentIndex)
+    if (positionInValid === -1) return
+    
     const thumbnailSize = variant === 'desktop' ? 64 : 56 // width/height + gap
     const containerSize = variant === 'desktop' 
       ? scrollContainer.clientHeight 
       : scrollContainer.clientWidth
-    const scrollPosition = currentIndex * thumbnailSize - (containerSize / 2) + (thumbnailSize / 2)
+    const scrollPosition = positionInValid * thumbnailSize - (containerSize / 2) + (thumbnailSize / 2)
     
     if (variant === 'desktop') {
       scrollContainer.scrollTo({
