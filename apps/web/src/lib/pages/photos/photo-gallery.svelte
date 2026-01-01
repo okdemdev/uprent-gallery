@@ -6,6 +6,7 @@
    * - AI-powered image cleaning
    * - Desktop floating cards layout
    * - Mobile responsive bottom sheet actions
+   * - Thumbnail navigation for quick access (150+ images)
    */
   import { 
     XSVG, 
@@ -16,13 +17,18 @@
   import GalleryImage from './lib/components/gallery-image.svelte'
   import GalleryActions from './lib/components/gallery-actions.svelte'
   import PropertyInfoCard from './lib/components/property-info-card.svelte'
+  import GalleryThumbnailStrip from './lib/components/gallery-thumbnail-strip.svelte'
 
   let { property, onClose }: { property: BasePropertySchema; onClose: () => void } = $props()
 
   // Initialize gallery state
   const galleryState = createGalleryState()
 
-  // Setup keyboard handling and body overflow lock
+  // Refs for scroll tracking
+  let scrollContainer: HTMLDivElement
+  let imageRefs: HTMLDivElement[] = []
+
+  // Setup keyboard handling, body overflow lock, and intersection observer
   $effect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -31,15 +37,47 @@
     window.addEventListener('keydown', handleKeydown)
     document.body.style.overflow = 'hidden'
 
+    // Setup intersection observer to track visible image
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+            const index = parseInt(entry.target.getAttribute('data-index') || '0', 10)
+            galleryState.currentImageIndex = index
+          }
+        })
+      },
+      {
+        root: scrollContainer,
+        threshold: 0.5,
+      }
+    )
+
+    // Observe all image containers after they're mounted
+    setTimeout(() => {
+      imageRefs.forEach((ref) => {
+        if (ref) observer.observe(ref)
+      })
+    }, 100)
+
     return () => {
       window.removeEventListener('keydown', handleKeydown)
       document.body.style.overflow = ''
       galleryState.cleanup()
+      observer.disconnect()
     }
   })
 
   function handleImageError(index: number) {
     galleryState.markImageFailed(index)
+  }
+
+  // Scroll to specific image when thumbnail is clicked
+  function scrollToImage(index: number) {
+    const targetRef = imageRefs[index]
+    if (targetRef && scrollContainer) {
+      targetRef.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
   }
 
   // Reactive getters for state
@@ -105,7 +143,10 @@
   </div>
 
    <!-- Middle Column: Images (Desktop + Mobile) -->
-  <div class=".flex-1 .w-full .h-full .overflow-y-auto md:.pb-[140px] .pb-0 md:.pt-[100px] .pt-0 .scrollbar-hide .z-0">
+  <div 
+    bind:this={scrollContainer}
+    class=".flex-1 .w-full .h-full .overflow-y-auto md:.pb-[200px] .pb-0 md:.pt-[100px] .pt-0 .scrollbar-hide .z-0"
+  >
     <div class=".flex .flex-col .gap-6 .p-4 .max-w-4xl .mx-auto .py-12">
       {#each property.imageURLs as imageUrl, index}
         {@const isFailed = galleryState.isImageFailed(index)}
@@ -113,13 +154,18 @@
         {@const cleanedUrl = getCleanedUrl(index)}
         
         {#if !isFailed}
-          <GalleryImage 
-            {imageUrl} 
-            {index}
-            cleaningState={cleaningState}
-            cleanedUrl={cleanedUrl}
-            onImageError={handleImageError}
-          />
+          <div 
+            bind:this={imageRefs[index]}
+            data-index={index}
+          >
+            <GalleryImage 
+              {imageUrl} 
+              {index}
+              cleaningState={cleaningState}
+              cleanedUrl={cleanedUrl}
+              onImageError={handleImageError}
+            />
+          </div>
         {/if}
       {/each}
     </div>
@@ -136,8 +182,28 @@
     />
   </div>
 
+  <!-- Desktop: Thumbnail Panel (Right Side) - hidden on md and below -->
+  <div class=".flex md:.hidden .fixed .right-4 .top-16 .z-20 .pointer-events-none">
+    <GalleryThumbnailStrip
+      imageURLs={property.imageURLs}
+      currentIndex={galleryState.currentImageIndex}
+      failedIndices={galleryState.failedImages}
+      variant="desktop"
+      onThumbnailClick={scrollToImage}
+    />
+  </div>
+
   <!-- Mobile Bottom Sheet Actions (Fixed) - visible on md and below, hidden on desktop -->
-  <div class=".hidden md:.block .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-3 .pb-safe .z-30">
+  <div class=".hidden md:.flex .flex-col .gap-2 .fixed .bottom-0 .left-0 .right-0 .bg-white .border-t .p-3 .pb-safe .z-30">
+    <!-- Mobile Thumbnail Strip -->
+    <GalleryThumbnailStrip
+      imageURLs={property.imageURLs}
+      currentIndex={galleryState.currentImageIndex}
+      failedIndices={galleryState.failedImages}
+      variant="mobile"
+      onThumbnailClick={scrollToImage}
+    />
+    
     <GalleryActions 
       {property} 
       variant="mobile" 

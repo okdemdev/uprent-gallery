@@ -58,7 +58,7 @@
 {#if variant === 'mobile'}
   <!-- Mobile Bottom Sheet Actions -->
   <div class=".flex .flex-col .gap-2">
-    <Button primary onClick={handleApply} disabled={appliedState !== 'idle'}>
+    <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} class=".w-full">
       {#if appliedState === 'idle'}
         <SendSVG slot="icon" />
         Apply
@@ -72,11 +72,11 @@
       {/if}
     </Button>
     <div class=".grid .grid-cols-2 .gap-2">
-      <Button outline onClick={openExternal}>
+      <Button subtle onClick={openExternal}>
         <ExternalLinkSVG slot="icon" />
         Open
       </Button>
-      <Button outline destructive onClick={handleNotInterested} disabled={ignoredState !== 'idle'}>
+      <Button subtle onClick={handleNotInterested} disabled={ignoredState !== 'idle'}>
         <ThumbDownSVG slot="icon" />
         Ignore
       </Button>
@@ -88,7 +88,7 @@
     <h3 class=".font-semibold .text-sm .text-black">Interested?</h3>
     
     <div class=".flex .flex-col .gap-2">
-      <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} size="sm" wide>
+      <Button primary onClick={handleApply} disabled={appliedState !== 'idle'} class=".w-full .h-8 .text-xs">
         {#if appliedState === 'idle'}
           <SendSVG slot="icon" />
           Apply
@@ -102,12 +102,12 @@
         {/if}
       </Button>
       
-      <Button outline onClick={openExternal} size="sm" wide>
+      <Button subtle onClick={openExternal} class=".w-full .h-8 .text-xs">
         <ExternalLinkSVG slot="icon" />
         Open
       </Button>
       
-      <Button outline destructive onClick={handleNotInterested} disabled={ignoredState !== 'idle'} size="sm" wide>
+      <Button subtle onClick={handleNotInterested} disabled={ignoredState !== 'idle'} class=".w-full .h-8 .text-xs">
         {#if ignoredState === 'idle'}
           <ThumbDownSVG slot="icon" />
           Ignore

@@ -13,6 +13,7 @@ type GalleryState = {
   failedImages: Set<number>
   appliedState: ActionState
   ignoredState: ActionState
+  currentImageIndex: number
 }
 
 export const createGalleryState = () => {
@@ -23,6 +24,7 @@ export const createGalleryState = () => {
     failedImages: new Set(),
     appliedState: 'idle',
     ignoredState: 'idle',
+    currentImageIndex: 0,
   })
 
   return {
@@ -65,6 +67,9 @@ export const createGalleryState = () => {
       newFailed.add(index)
       state.failedImages = newFailed
     },
+    get failedImages() {
+      return state.failedImages
+    },
 
     // Action states
     get appliedState() {
@@ -78,6 +83,14 @@ export const createGalleryState = () => {
     },
     set ignoredState(value: ActionState) {
       state.ignoredState = value
+    },
+
+    // Current image index for navigation
+    get currentImageIndex() {
+      return state.currentImageIndex
+    },
+    set currentImageIndex(value: number) {
+      state.currentImageIndex = value
     },
 
     // Cleanup - revoke all object URLs
@@ -94,6 +107,7 @@ export const createGalleryState = () => {
       state.failedImages = new Set()
       state.appliedState = 'idle'
       state.ignoredState = 'idle'
+      state.currentImageIndex = 0
     },
   }
 }
